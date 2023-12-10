@@ -7,6 +7,7 @@ Minimalistic template for FastAPI backend with database (MongoDB + BeanieODM), J
 Check more details about flow [here](https://github.com/denver-code/fastapi_zitadel_quote_example) in fastapi-zitadel quote example
 - [ ] Database
 - [ ] Docker-compose
+- [ ] Encryption
 
 ## Installation
 [Follow this guide](INSTALATION.md)

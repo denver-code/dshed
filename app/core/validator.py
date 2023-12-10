@@ -6,16 +6,13 @@ import jwt
 from typing import Dict
 from authlib.oauth2.rfc7662 import IntrospectTokenValidator
 import requests
-from dotenv import load_dotenv, find_dotenv
 from requests.auth import HTTPBasicAuth
+from app.core.config import settings
 
 
-load_dotenv(find_dotenv())
-
-
-ZITADEL_DOMAIN = os.getenv("ZITADEL_DOMAIN")
-ZITADEL_INTROSPECTION_URL = os.getenv("ZITADEL_INTROSPECTION_URL")
-API_PRIVATE_KEY_FILE_PATH = os.getenv("API_PRIVATE_KEY_FILE")
+ZITADEL_DOMAIN = settings.ZITADEL_DOMAIN
+ZITADEL_INTROSPECTION_URL = settings.ZITADEL_INTROSPECTION_URL
+API_PRIVATE_KEY_FILE_PATH = settings.API_PRIVATE_KEY_FILE
 API_PRIVATE_KEY_FILE = {}
 
 
@@ -84,14 +81,14 @@ class ZitadelIntrospectTokenValidator(IntrospectTokenValidator):
                 {"code": "invalid_token_revoked", "description": "Token was revoked."},
                 401,
             )
-        if token["exp"] < now:
-            raise ValidatorError(
-                {"code": "invalid_token_expired", "description": "Token has expired."},
-                401,
-            )
         if not token.get("active"):
             raise ValidatorError(
                 {"code": "invalid_token_inactive", "description": "Token is inactive."},
+                401,
+            )
+        if token["exp"] < now:
+            raise ValidatorError(
+                {"code": "invalid_token_expired", "description": "Token has expired."},
                 401,
             )
         if not self.match_token_scopes(token, scopes):

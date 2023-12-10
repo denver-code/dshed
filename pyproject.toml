@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "apexid"
+name = "dshed"
 version = "0.1.0"
 description = ""
 authors = ["Ihor Savenko <csigorek@gmail.com>"]

@@ -1,10 +1,12 @@
 from beanie import init_beanie
-from fastapi import Depends, FastAPI
+from fastapi import APIRouter, Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.authorization import auth_required
 
 from app.core.config import settings
 from app.core.database import db
+from v1.private import BacklogModel, DocumentModel, DocumentState
+from v1.router import v1_router
 
 
 def get_application():
@@ -30,6 +32,9 @@ async def on_startup():
         database=db,
         document_models=[
             # Add your models here
+            DocumentModel,
+            BacklogModel,
+            DocumentState,
         ],
     )
 
@@ -48,3 +53,11 @@ def protected(user: dict = Depends(auth_required)):
         "message": "Hello in Protected World",
         "latest_version": "v1",
     }
+
+
+api_router = APIRouter(
+    prefix="/api",
+)
+api_router.include_router(v1_router)
+
+app.include_router(api_router)
